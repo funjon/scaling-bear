@@ -13,6 +13,7 @@ package model;
 
 import exception.AutoException;
 import model.OptionSet;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,25 +58,25 @@ public class Automobile implements Serializable {
 	}
 	
 	/* Setters */
-	public void setCost(int cost) { this._cost = cost; } // should this exist? we get the cost from the config file
-	public void setModelName (String modelName) { this._modelName = modelName; }
-	public void setMake(String make) { this._make = make; }
-	public void setModel(String model) { this._model = model; }
+	public synchronized void setCost(int cost) { this._cost = cost; } // should this exist? we get the cost from the config file
+	public synchronized void setModelName (String modelName) { this._modelName = modelName; }
+	public synchronized void setMake(String make) { this._make = make; }
+	public synchronized void setModel(String model) { this._model = model; }
 	
-	public void setDefaultOptionChoices() {
+	public synchronized void setDefaultOptionChoices() {
 		for (int opsetIndex = 0; opsetIndex < _opset.size(); opsetIndex++) {
 			_opset.get(opsetIndex).setDefaultChoice();
 		}
 	}
 	
 	/* CRUD - Create */
-	public void createOptionSets(int opsetCount) {
+	public synchronized void createOptionSets(int opsetCount) {
 		_opset = new ArrayList<OptionSet>(opsetCount);
 		_opsetHash = new HashMap<String, OptionSet>();
 //		System.out.printf("Created array for %d optionSets\n", opsetCount);
 	}
 	
-	public void addOptionSet(String opsetName, int optionCount) throws AutoException {
+	public synchronized void addOptionSet(String opsetName, int optionCount) throws AutoException {
 		// No longer need to worry about too many opsets, the ArrayList is extensible
 //		if (_opsetCount == _opsets) { throw new AutoException(101); }
 //		else { 
@@ -86,20 +87,20 @@ public class Automobile implements Serializable {
 //		}
 	}
 	
-	public void addOptionSetAtIndex(int index, String opsetName, int optionCount) {
+	public synchronized void addOptionSetAtIndex(int index, String opsetName, int optionCount) {
 		OptionSet os = new OptionSet(opsetName, optionCount);
 		_opset.add(index, os);
 		_opsetHash.put(opsetName, os);
 	}
 	
-	public void addOptionToOptionSet(int index, String option, float cost) {
+	public synchronized void addOptionToOptionSet(int index, String option, float cost) {
 		try {
 			_opset.get(index).createOption(option, cost);
 //			System.out.printf("Added option %s to opset %s with cost %.2f\n", option, _opset.get(index).getOpsetName(), cost);
 		} catch (AutoException ae) { ae.print(); }
 		
 	}
-	public void addOptionToOptionSet(String opsetName, String option, float cost) {
+	public synchronized void addOptionToOptionSet(String opsetName, String option, float cost) {
 		int index = findOpset(opsetName);
 		this.addOptionToOptionSet(index, option, cost);
 	}
@@ -146,7 +147,14 @@ public class Automobile implements Serializable {
 	public int getOptionCount(int opsetIndex) { return _opset.get(opsetIndex).getOpsetCount(); }
 	public int getOptionCount(String opsetName) { return getOptionCount(getOpsetIndex(opsetName)); }
 	
-	public void setOptionChoice(String opsetName, String optionName) {
+	public synchronized void setOptionChoice(String opsetName, String optionName) {
+		System.out.printf("Sleeping 2s for threading testing... [%s set to %s]\n", opsetName, optionName);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			System.out.printf("Caught an InterruptedException: %s\n", e.toString());
+		}
+		
 		int opsetIndex = getOpsetIndex(opsetName);
 		_opset.get(opsetIndex).setChoice(optionName);
 	}
@@ -164,7 +172,7 @@ public class Automobile implements Serializable {
 	
 	/* CRUD - Update */
 	
-	public void updateOptionPrice(String opsetName, String optionName, float newPrice) throws AutoException {
+	public synchronized void updateOptionPrice(String opsetName, String optionName, float newPrice) throws AutoException {
 		int opsetIndex = 0, optionIndex = 0;
 		
 		// Get the index of the opset
@@ -177,7 +185,7 @@ public class Automobile implements Serializable {
 		}
 	}
 		
-	public void renameOpset(String from, String to) throws AutoException {
+	public synchronized void renameOpset(String from, String to) throws AutoException {
 		if (from == null || from == "") { throw new AutoException(2); }
 		else if (to == null || from == "") { throw new AutoException(2); }
 		else if (getOpsetIndex(from) == -1) { throw new AutoException(2); }

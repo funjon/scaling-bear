@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import adapter.BuildAuto;
+import scale.EditOptions;
 
 public class autoDriver {
 
@@ -53,8 +54,152 @@ public class autoDriver {
 		
 		builder.printAuto(modelName);
 		System.out.printf("As configured, this car costs $%.2f\n", builder.getPrice(modelName));
+		
+		System.out.printf("\n\nLet's do some thread testing!\n");
+		EditOptions eo1 = new EditOptions(modelName, "Available Colors", "Infra-Red Clearcoat");
+		EditOptions eo2 = new EditOptions(modelName, "Available Colors", "French Blue Clearcoat Metallic");
+		
+		Thread t1 = new Thread(eo1);
+		Thread t2 = new Thread(eo2);
+		
+		t1.start();
+		t2.start();
+		
+		try {
+			t1.join();
+			t2.join();
+		} catch (InterruptedException e) {
+			System.out.printf("Caught an InterruptedException! %s\n", e.toString());
+		}
+		
+		builder.printAuto(modelName);
 	}
 }
+
+/* test run - lab 4
+ * 
+ * Note - I added the 2000ms sleep in Automobile.setOptionChoice() to make it very obvious
+ * that the locking wrapped around the modification methods is in effect. Unfortunately
+ * I have a lot of changes in here, so it takes a bit to run :) But I will remove
+ * the Thread.sleep() for lab5 and future. This is just to make it very clear that
+ * the locking is working.
+ 
+Enter filename for configuration: /Users/jdisher/Dropbox/DeAnza/cis35b/model/config.txt
+Loading config options from /Users/jdisher/Dropbox/DeAnza/cis35b/model/config.txt
+Dumping information for Generic Motors Focus Wagon ZTW
+Base cost of $18445.00
+There are 5 opsets
+Available options for OptionSet color [10]
+Option Fort Knox Gold Clearcoat Metallic has price $0.00
+Option Liquid Grey Clearcoat Metallic has price $0.00
+Option Infra-Red Clearcoat has price $0.00
+Option Grabber Green Clearcoat Metallic has price $0.00
+Option Sangria Red Clearcoat Metallic has price $0.00
+Option French Blue Clearcoat Metallic has price $0.00
+Option Twilight Blue Clearcoat Metallic has price $0.00
+Option CD Silver Clearcoat Metallic has price $0.00
+Option Pitch Black Clearcoat has price $0.00
+Option Cloud 9 White Clearcoat has price $0.00
+
+Available options for OptionSet transmission [2]
+Option manual has price $-815.00
+Option automatic has price $0.00
+
+Available options for OptionSet brakes [3]
+Option standard has price $0.00
+Option ABS has price $400.00
+Option ABS with Advance Trac has price $1625.00
+
+Available options for OptionSet sideairbags [2]
+Option none has price $0.00
+Option present has price $350.00
+
+Available options for OptionSet moonroof [2]
+Option none has price $0.00
+Option present has price $595.00
+
+Changing some stuff before printing it out again!
+
+Sleeping 2s for threading testing... [Available Colors set to Infra-Red Clearcoat]
+Sleeping 2s for threading testing... [transmission set to manual]
+Sleeping 2s for threading testing... [brakes set to ABS with Advance Trac]
+Sleeping 2s for threading testing... [Side Airbags set to present]
+Sleeping 2s for threading testing... [moonroof set to present]
+Dumping information for Generic Motors Focus Wagon ZTW
+Base cost of $18445.00
+There are 5 opsets
+Available options for OptionSet Available Colors [10]
+Option Fort Knox Gold Clearcoat Metallic has price $0.00
+Option Liquid Grey Clearcoat Metallic has price $0.00
+Option Infra-Red Clearcoat has price $499.95
+Option Grabber Green Clearcoat Metallic has price $0.00
+Option Sangria Red Clearcoat Metallic has price $0.00
+Option French Blue Clearcoat Metallic has price $999.95
+Option Twilight Blue Clearcoat Metallic has price $0.00
+Option CD Silver Clearcoat Metallic has price $0.00
+Option Pitch Black Clearcoat has price $0.00
+Option Cloud 9 White Clearcoat has price $0.00
+
+Available options for OptionSet transmission [2]
+Option manual has price $-815.00
+Option automatic has price $0.00
+
+Available options for OptionSet brakes [3]
+Option standard has price $0.00
+Option ABS has price $400.00
+Option ABS with Advance Trac has price $1625.00
+
+Available options for OptionSet Side Airbags [2]
+Option none has price $0.00
+Option present has price $350.00
+
+Available options for OptionSet moonroof [2]
+Option none has price $0.00
+Option present has price $595.00
+
+As configured, this car costs $20699.95
+
+
+Let's do some thread testing!
+Sleeping for 966ms, then setting option French Blue Clearcoat Metallic for opset Available Colors on model Focus Wagon ZTW
+Sleeping for 809ms, then setting option Infra-Red Clearcoat for opset Available Colors on model Focus Wagon ZTW
+Sleeping 2s for threading testing... [Available Colors set to Infra-Red Clearcoat]
+Option selection complete!
+Sleeping 2s for threading testing... [Available Colors set to French Blue Clearcoat Metallic]
+Option selection complete!
+Dumping information for Generic Motors Focus Wagon ZTW
+Base cost of $18445.00
+There are 5 opsets
+Available options for OptionSet Available Colors [10]
+Option Fort Knox Gold Clearcoat Metallic has price $0.00
+Option Liquid Grey Clearcoat Metallic has price $0.00
+Option Infra-Red Clearcoat has price $499.95
+Option Grabber Green Clearcoat Metallic has price $0.00
+Option Sangria Red Clearcoat Metallic has price $0.00
+Option French Blue Clearcoat Metallic has price $999.95
+Option Twilight Blue Clearcoat Metallic has price $0.00
+Option CD Silver Clearcoat Metallic has price $0.00
+Option Pitch Black Clearcoat has price $0.00
+Option Cloud 9 White Clearcoat has price $0.00
+
+Available options for OptionSet transmission [2]
+Option manual has price $-815.00
+Option automatic has price $0.00
+
+Available options for OptionSet brakes [3]
+Option standard has price $0.00
+Option ABS has price $400.00
+Option ABS with Advance Trac has price $1625.00
+
+Available options for OptionSet Side Airbags [2]
+Option none has price $0.00
+Option present has price $350.00
+
+Available options for OptionSet moonroof [2]
+Option none has price $0.00
+Option present has price $595.00
+
+ */
 
 /* test run - lab 3
  

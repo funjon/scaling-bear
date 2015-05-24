@@ -1,15 +1,14 @@
 package adapter;
 
-import java.io.IOException;
+//import java.io.IOException;
 import java.util.LinkedHashMap;
 
 import exception.AutoException;
 import model.Automobile;
 import util.FileIO;
 
-public class BuildAuto extends proxyAutomobile implements CreateAuto, UpdateAuto, FixAuto {
+public class BuildAuto extends proxyAutomobile implements CreateAuto, UpdateAuto, FixAuto, ChangeOptions {
 	private static String sharedFile;
-	private float defaultPrice = 0.0f;
 	private static BuildAuto builder = new BuildAuto();
 	FileIO fio = new FileIO();
 	
