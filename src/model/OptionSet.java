@@ -14,6 +14,8 @@ package model;
 
 import java.io.Serializable;
 
+import exception.AutoException;
+
 class OptionSet implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +33,7 @@ class OptionSet implements Serializable {
 	protected int getOpsetCurrent() { return _optionCurrent; }
 	protected void setOpsetCurrent(int current) { _optionCurrent = current; }
 	
-	protected void createOptionAtIndex(int index, String optionName, int optionCost) { _options[index] = new Option(optionName, optionCost); }
+	protected void createOptionAtIndex(int index, String optionName, float optionCost) { _options[index] = new Option(optionName, optionCost); }
 	
 	protected void deleteOptionSet() {
 		// Clear out the array
@@ -51,9 +53,17 @@ class OptionSet implements Serializable {
 		return index;
 	}
 	
-	protected void createOption(String optionName, int optionCost) {
-		if (_optionCurrent == _optionCount) { System.out.printf("Maximum options reached!\n"); }
+	protected float getOptionPrice(String optionName) {
+		return _options[this.getOptionIndex(optionName)].getOptionCost();
+	}
+	protected void createOption(String optionName, float optionCost) throws AutoException {
+		if (_optionCurrent == _optionCount) { throw new AutoException(201);	}
 		else { _options[_optionCurrent] = new Option(optionName, optionCost); _optionCurrent++; }
+	}
+	
+	protected void updateOptionPrice(String optionName, float newPrice) {
+		int optionIndex = this.getOptionIndex(optionName);
+		_options[optionIndex].setOptionCost(newPrice);
 	}
 	
 	protected void print() {
@@ -76,19 +86,19 @@ class OptionSet implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		private String _optionName;
-		private int _optionCost;
+		private float _optionCost;
 
 		protected String getOptionName() { return _optionName; }
-		protected int getOptionCost() { return _optionCost; }
+		protected float getOptionCost() { return _optionCost; }
 		
 		protected void setOptionName(String name) { this._optionName = name; }
-		protected void setOptionCost(final int cost) { this._optionCost = cost; }
+		protected void setOptionCost(float cost) { this._optionCost = cost; }
 		
 		protected void deleteOption() { this._optionName = ""; this._optionCost = 0; }
 		
-		protected void print() { System.out.printf("Option %s has price %d\n", _optionName, _optionCost); }
+		protected void print() { System.out.printf("Option %s has price $%.2f\n", _optionName, _optionCost); }
 		
-		protected Option(String name, int cost) {
+		protected Option(String name, float cost) {
 			this._optionName = name;
 			this._optionCost = cost;
 		}

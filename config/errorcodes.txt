@@ -1,0 +1,9 @@
+1,EBADMODELNAME,Invalid model name
+2,EBADOPSETNAME,Invalid optionSet name
+3,EBADOPTIONNAME,Invalid option name 
+100,EDUPEOPSET,Duplicate optionSet encountered
+101,ETOOMANYOPSETS,Too many optionSets
+102,EUNKNOWNOPSET,Undeclared optionSet encountered
+200,EDUPEOPTION,Duplicate option encountered
+201,ETOOMANYOPTIONS,Too many options
+300,EFILENOTFOUND,File not found
