@@ -1,0 +1,27 @@
+model,Focus Wagon ZTW
+price,18445
+optionSetCount,5
+optionSet,color,10
+optionSet,transmission,2
+optionSet,brakes,3
+optionSet,sideairbags,2
+optionSet,moonroof,2
+option,color,0,Fort Knox Gold Clearcoat Metallic
+option,color,0,Liquid Grey Clearcoat Metallic
+option,color,0,Infra-Red Clearcoat
+option,color,0,Grabber Green Clearcoat Metallic
+option,color,0,Sangria Red Clearcoat Metallic
+option,color,0,French Blue Clearcoat Metallic
+option,color,0,Twilight Blue Clearcoat Metallic
+option,color,0,CD Silver Clearcoat Metallic
+option,color,0,Pitch Black Clearcoat
+option,color,0,Cloud 9 White Clearcoat
+option,transmission,-815,manual
+option,transmission,0,automatic
+option,brakes,0,standard
+option,brakes,400,ABS
+option,brakes,1625,ABS with Advance Trac
+option,sideairbags,0,none
+option,sideairbags,350,present
+option,moonroof,0,none
+option,moonroof,595,present
