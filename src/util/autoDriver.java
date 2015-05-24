@@ -33,20 +33,102 @@ public class autoDriver {
 			filename = cons.readLine(); 
 			System.out.printf("Loading config options from %s\n", filename);
 		} catch (IOException e) { System.out.printf("%s\n", e.toString()); }
-		builder.buildAuto(filename);
-		builder.printAuto(builder.getCurrentModelName());
+		String modelName = builder.buildAuto(filename);
+		builder.printAuto(modelName);
 		
 		// Change some stuff, then print it out again
 		System.out.printf("Changing some stuff before printing it out again!\n\n");
 		
-		builder.updateOptionPrice(builder.getCurrentModelName(), "color", "Infra-Red Clearcoat", 499.95f);
-		builder.updateOptionPrice(builder.getCurrentModelName(), "color", "French Blue Clearcoat Metallic", 999.95f);
-		builder.updateOpsetName(builder.getCurrentModelName(), "color", "Available Colors");
-		builder.updateOpsetName(builder.getCurrentModelName(), "sideairbags", "Side Airbags");
+		builder.updateOptionPrice(modelName, "color", "Infra-Red Clearcoat", 499.95f);
+		builder.updateOptionPrice(modelName, "color", "French Blue Clearcoat Metallic", 999.95f);
+		builder.updateOpsetName(modelName, "color", "Available Colors");
+		builder.updateOpsetName(modelName, "sideairbags", "Side Airbags");
 		
-		builder.printAuto(builder.getCurrentModelName());
+		// Set some options!
+		builder.setOptionChoice(modelName, "Available Colors", "Infra-Red Clearcoat");
+		builder.setOptionChoice(modelName, "transmission", "manual");
+		builder.setOptionChoice(modelName, "brakes", "ABS with Advance Trac");
+		builder.setOptionChoice(modelName, "Side Airbags", "present");
+		builder.setOptionChoice(modelName, "moonroof", "present");
+		
+		builder.printAuto(modelName);
+		System.out.printf("As configured, this car costs $%.2f\n", builder.getPrice(modelName));
 	}
 }
+
+/* test run - lab 3
+ 
+Enter filename for configuration: /Users/jdisher/Dropbox/DeAnza/cis35b/model/config.txt
+Loading config options from /Users/jdisher/Dropbox/DeAnza/cis35b/model/config.txt
+Dumping information for Generic Motors Focus Wagon ZTW
+Base cost of $18445.00
+There are 5 opsets
+Available options for OptionSet color [10]
+Option Fort Knox Gold Clearcoat Metallic has price $0.00
+Option Liquid Grey Clearcoat Metallic has price $0.00
+Option Infra-Red Clearcoat has price $0.00
+Option Grabber Green Clearcoat Metallic has price $0.00
+Option Sangria Red Clearcoat Metallic has price $0.00
+Option French Blue Clearcoat Metallic has price $0.00
+Option Twilight Blue Clearcoat Metallic has price $0.00
+Option CD Silver Clearcoat Metallic has price $0.00
+Option Pitch Black Clearcoat has price $0.00
+Option Cloud 9 White Clearcoat has price $0.00
+
+Available options for OptionSet transmission [2]
+Option manual has price $-815.00
+Option automatic has price $0.00
+
+Available options for OptionSet brakes [3]
+Option standard has price $0.00
+Option ABS has price $400.00
+Option ABS with Advance Trac has price $1625.00
+
+Available options for OptionSet sideairbags [2]
+Option none has price $0.00
+Option present has price $350.00
+
+Available options for OptionSet moonroof [2]
+Option none has price $0.00
+Option present has price $595.00
+
+Changing some stuff before printing it out again!
+
+Dumping information for Generic Motors Focus Wagon ZTW
+Base cost of $18445.00
+There are 5 opsets
+Available options for OptionSet Available Colors [10]
+Option Fort Knox Gold Clearcoat Metallic has price $0.00
+Option Liquid Grey Clearcoat Metallic has price $0.00
+Option Infra-Red Clearcoat has price $499.95
+Option Grabber Green Clearcoat Metallic has price $0.00
+Option Sangria Red Clearcoat Metallic has price $0.00
+Option French Blue Clearcoat Metallic has price $999.95
+Option Twilight Blue Clearcoat Metallic has price $0.00
+Option CD Silver Clearcoat Metallic has price $0.00
+Option Pitch Black Clearcoat has price $0.00
+Option Cloud 9 White Clearcoat has price $0.00
+
+Available options for OptionSet transmission [2]
+Option manual has price $-815.00
+Option automatic has price $0.00
+
+Available options for OptionSet brakes [3]
+Option standard has price $0.00
+Option ABS has price $400.00
+Option ABS with Advance Trac has price $1625.00
+
+Available options for OptionSet Side Airbags [2]
+Option none has price $0.00
+Option present has price $350.00
+
+Available options for OptionSet moonroof [2]
+Option none has price $0.00
+Option present has price $595.00
+
+As configured, this car costs $20699.95
+ 
+ */
 
 /* test run - lab 2
 

@@ -2,6 +2,8 @@ package adapter;
 
 import model.Automobile;
 
+import java.util.LinkedHashMap;
+
 public abstract class proxyAutomobile {
-	protected Automobile a;
+	protected LinkedHashMap<String, Automobile> autos;
 }
