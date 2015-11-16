@@ -13,6 +13,7 @@ package util;
 
 import exception.AutoException;
 import model.Automobile;
+import util.fileType;
 
 import java.io.*;
 import java.util.*;
@@ -21,6 +22,7 @@ public class FileIO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String filename;
+	private fileType type;
 
 	// Nothing really needed for the FileIO object, it's just for utility methods
 	public FileIO() {}
@@ -30,10 +32,23 @@ public class FileIO implements Serializable {
 	public void setFilename(String file) throws AutoException {
 		File f = new File(file);
 		if (!f.exists()) { throw new AutoException(300); } else { this.filename = file; }
+		// Let's try to set the filetype correctly
+		if (filename.toLowerCase().contains("props")) { this.setFiletype(fileType.PROPS); } else { this.setFiletype(fileType.TXT); }
+	}
+	
+	public void setFiletype(fileType type) { this.type = type; }
+	
+	// Now we support multiple file types
+	public Automobile readFile() throws AutoException {
+		switch (type) {
+			case TXT: return readPlaintext(); 
+			case PROPS: return readProperties(); 
+			default: return null;
+		}
 	}
 	
 	// Ingest a specific file and return an automobile object
-	public Automobile readFile() throws AutoException {
+	public Automobile readPlaintext() throws AutoException {
 		File f = new File(filename);
 		if (!f.exists()) { throw new AutoException(300); }
 		
@@ -86,6 +101,83 @@ public class FileIO implements Serializable {
 			
 			auto.addOptionToOptionSet(elements[1], optionName, Integer.parseInt(elements[2]));
 		} else { System.out.printf("Unrecognized token identified: %s\n", elements[0]); }
+	}
+	
+	// Parser for a properties file
+	public Automobile readProperties() throws AutoException {
+		Properties props = new Properties();
+		FileInputStream infile;
+		Automobile a = null;
+		
+		try {
+			infile = new FileInputStream(this.filename);
+			props.load(infile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			throw new AutoException(300);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.printf("Failed to read the properties file in: %s\n", e.toString());
+		}
+		
+		// Make sure we have some keys
+		if (!props.getProperty("CarModel").equals(null)) {
+			// We have an auto
+			a = loadProperties(props);
+		}
+		
+		return a;
+	}
+	
+	// We need this for when we get a serialized properties file via client/server code
+	public Automobile loadProperties(Properties props) throws AutoException {
+		Automobile a = new Automobile();
+		
+		// Basic properties
+		a.setModel(props.getProperty("CarModel"));
+		a.setCost(Integer.parseInt(props.getProperty("BasePrice")));
+		
+		// I hate the way properties files work here. My plain-text parser is a little more flexible, 
+		// because I don't need to have key names with static positions like these. It just feels clunkier.
+		
+		// Figure out how many optionsets
+		a.createOptionSets(Integer.parseInt(props.getProperty("OptionCount")));
+		
+		// Color
+		a.addOptionSet(props.getProperty("Option1"), Integer.parseInt(props.getProperty("Option1Count")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1a"), Integer.parseInt(props.getProperty("OptionCost1a")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1b"), Integer.parseInt(props.getProperty("OptionCost1b")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1c"), Integer.parseInt(props.getProperty("OptionCost1c")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1d"), Integer.parseInt(props.getProperty("OptionCost1d")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1e"), Integer.parseInt(props.getProperty("OptionCost1e")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1f"), Integer.parseInt(props.getProperty("OptionCost1f")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1g"), Integer.parseInt(props.getProperty("OptionCost1g")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1h"), Integer.parseInt(props.getProperty("OptionCost1h")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1i"), Integer.parseInt(props.getProperty("OptionCost1i")));
+		a.addOptionToOptionSet(props.getProperty("Option1"), props.getProperty("OptionName1j"), Integer.parseInt(props.getProperty("OptionCost1j")));
+		
+		// Transmission
+		a.addOptionSet(props.getProperty("Option2"), Integer.parseInt(props.getProperty("Option2Count")));
+		a.addOptionToOptionSet(props.getProperty("Option2"), props.getProperty("OptionName2a"), Integer.parseInt(props.getProperty("OptionCost2a")));
+		a.addOptionToOptionSet(props.getProperty("Option2"), props.getProperty("OptionName2b"), Integer.parseInt(props.getProperty("OptionCost2b")));
+		
+		// Brakes
+		a.addOptionSet(props.getProperty("Option3"), Integer.parseInt(props.getProperty("Option3Count")));
+		a.addOptionToOptionSet(props.getProperty("Option3"), props.getProperty("OptionName3a"), Integer.parseInt(props.getProperty("OptionCost3a")));
+		a.addOptionToOptionSet(props.getProperty("Option3"), props.getProperty("OptionName3b"), Integer.parseInt(props.getProperty("OptionCost3b")));
+		a.addOptionToOptionSet(props.getProperty("Option3"), props.getProperty("OptionName3c"), Integer.parseInt(props.getProperty("OptionCost3c")));
+		
+		// Side airbags
+		a.addOptionSet(props.getProperty("Option4"), Integer.parseInt(props.getProperty("Option4Count")));
+		a.addOptionToOptionSet(props.getProperty("Option4"), props.getProperty("OptionName4a"), Integer.parseInt(props.getProperty("OptionCost4a")));
+		a.addOptionToOptionSet(props.getProperty("Option4"), props.getProperty("OptionName4b"), Integer.parseInt(props.getProperty("OptionCost4b")));
+
+		// Moonroof
+		a.addOptionSet(props.getProperty("Option5"), Integer.parseInt(props.getProperty("Option5Count")));
+		a.addOptionToOptionSet(props.getProperty("Option5"), props.getProperty("OptionName5a"), Integer.parseInt(props.getProperty("OptionCost5a")));
+		a.addOptionToOptionSet(props.getProperty("Option5"), props.getProperty("OptionName5b"), Integer.parseInt(props.getProperty("OptionCost5b")));
+
+		return a;
 	}
 	
 	public HashMap<Integer, String> loadErrors() {

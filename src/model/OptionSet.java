@@ -27,19 +27,28 @@ class OptionSet implements Serializable {
 	
 //	private Option _options[];
 	private ArrayList<Option> _options;
-	private Option _choice;
+	private Option _choice = null;
 
 	protected String getOpsetName() { return _opsetName; }
 	protected void setOpsetName(String _opsetName) { this._opsetName = _opsetName; }
 	
+	protected ArrayList<String> getOptionNames() {
+		ArrayList<String> names = new ArrayList<String>();
+		for (int index = 0; index < this._options.size(); index++) {
+			names.add(this._options.get(index).getOptionName());
+		}
+		return names;
+	}
+
 	protected int getOpsetCount() { return _options.size(); }
 //	protected void setOpsetCount(int count) { _optionCount = count; }
 	
 	protected int getOpsetCurrent() { return _options.size(); }
 //	protected void setOpsetCurrent(int current) { _optionCurrent = current; }
 	
-	protected String getChoice() { return _choice.getOptionName(); }
-	protected float getChoicePrice() { return _choice.getOptionCost(); }
+	// Make sure a default option is chosen
+	protected String getChoice() { if (_choice == null) { _choice = this._options.get(0); } return _choice.getOptionName(); }
+	protected float getChoicePrice() { if (_choice == null) { _choice = this._options.get(0); } return _choice.getOptionCost(); } 
 	
 	protected void setChoice(String optionName) {
 		int index = getOptionIndex(optionName);

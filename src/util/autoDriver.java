@@ -34,9 +34,10 @@ public class autoDriver {
 			filename = cons.readLine(); 
 			System.out.printf("Loading config options from %s\n", filename);
 		} catch (IOException e) { System.out.printf("%s\n", e.toString()); }
+		
 		String modelName = builder.buildAuto(filename);
 		builder.printAuto(modelName);
-		
+	
 		// Change some stuff, then print it out again
 		System.out.printf("Changing some stuff before printing it out again!\n\n");
 		
@@ -48,9 +49,9 @@ public class autoDriver {
 		// Set some options!
 		builder.setOptionChoice(modelName, "Available Colors", "Infra-Red Clearcoat");
 		builder.setOptionChoice(modelName, "transmission", "manual");
-		builder.setOptionChoice(modelName, "brakes", "ABS with Advance Trac");
-		builder.setOptionChoice(modelName, "Side Airbags", "present");
-		builder.setOptionChoice(modelName, "moonroof", "present");
+		builder.setOptionChoice(modelName, "brakes", "ABS with AdvanceTrac");
+		builder.setOptionChoice(modelName, "Side Airbags", "Side AirBags Present");
+		builder.setOptionChoice(modelName, "moonroof", "MoonRoof Installed");
 		
 		builder.printAuto(modelName);
 		System.out.printf("As configured, this car costs $%.2f\n", builder.getPrice(modelName));
@@ -73,6 +74,7 @@ public class autoDriver {
 		}
 		
 		builder.printAuto(modelName);
+		
 	}
 }
 

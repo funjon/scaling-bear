@@ -45,7 +45,7 @@ public class Automobile implements Serializable {
 	public Automobile() throws AutoException { this("NONE",10000,10); }
 
 	/* Getters */
-	public String getModelName() { return _modelName; }
+	public String getModelName() { return this.getModel(); }
 	public String getMake() { return _make; }
 	public String getModel() { return _model; }
 	public float getCost() { return _cost; } // This is the base cost
@@ -59,9 +59,9 @@ public class Automobile implements Serializable {
 	
 	/* Setters */
 	public synchronized void setCost(int cost) { this._cost = cost; } // should this exist? we get the cost from the config file
-	public synchronized void setModelName (String modelName) { this._modelName = modelName; }
+	public synchronized void setModelName (String modelName) { this._modelName = this._model = modelName; }
 	public synchronized void setMake(String make) { this._make = make; }
-	public synchronized void setModel(String model) { this._model = model; }
+	public synchronized void setModel(String model) { this._model = this._modelName = model; }
 	
 	public synchronized void setDefaultOptionChoices() {
 		for (int opsetIndex = 0; opsetIndex < _opset.size(); opsetIndex++) {
@@ -144,17 +144,23 @@ public class Automobile implements Serializable {
 	}
 	
 	public int getOpsetCount() { return _opset.size(); }
+	public String getOpsetName(int opsetIndex) { return _opset.get(opsetIndex).getOpsetName(); }
 	public int getOptionCount(int opsetIndex) { return _opset.get(opsetIndex).getOpsetCount(); }
 	public int getOptionCount(String opsetName) { return getOptionCount(getOpsetIndex(opsetName)); }
 	
-	public synchronized void setOptionChoice(String opsetName, String optionName) {
-		System.out.printf("Sleeping 2s for threading testing... [%s set to %s]\n", opsetName, optionName);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			System.out.printf("Caught an InterruptedException: %s\n", e.toString());
+	public ArrayList<String> getOpsetNames() {
+		ArrayList<String> names = new ArrayList<String>();
+		for (int index = 0; index < this.getOpsetCount(); index++) {
+			names.add(this._opset.get(index).getOpsetName());
 		}
-		
+		return names;
+	}
+	
+	public ArrayList<String> getOptionNames(int opsetIndex) {
+		return this._opset.get(opsetIndex).getOptionNames();
+	}
+	
+	public synchronized void setOptionChoice(String opsetName, String optionName) {
 		int opsetIndex = getOpsetIndex(opsetName);
 		_opset.get(opsetIndex).setChoice(optionName);
 	}
